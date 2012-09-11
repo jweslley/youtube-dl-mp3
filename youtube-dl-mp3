@@ -4,7 +4,7 @@ url=$1
 
 TMP_FILE="youtube-mp3-$RANDOM.tmp"
 
-youtube-dl --get-title --get-url --get-filename "$url" > $TMP_FILE
+youtube-dl --ignore-errors --get-title --get-url --get-filename "$url" > $TMP_FILE 2> "/tmp/$TMP_FILE.err"
 
 exec 42< $TMP_FILE
 
