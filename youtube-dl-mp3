@@ -11,10 +11,11 @@ exec 42< $TMP_FILE
 while read video_title <&42 ; do
   read video_url <&42
   read video_filename <&42
-  wget "$video_url" -O "$video_filename"
-  ffmpeg -i "$video_filename" "$video_filename.wav"
-  lame "$video_filename.wav" "$video_title.mp3"
-  rm -f "$video_filename" "$video_filename.wav"
+  echo -ne "Wait for complete download of \"$video_title\"\r" \
+  && wget -c "$video_url" -O "$video_filename" 2> "/tmp/$TMP_FILE.err"
+  echo -ne "\"$video_filename\" ====> \"$video_title.MP3\"" \
+  && avconv -i "$video_filename"  -codec mp3 -ab 320k "$video_title.mp3" 2>> "/tmp/$TMP_FILE.err" 
+  rm -f "$video_filename" && echo -e "\ndone"
 done
 
 exec 42<&-
