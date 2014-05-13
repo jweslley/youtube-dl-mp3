@@ -15,9 +15,9 @@ while read video_title <&42 ; do
   wget "$video_url" -O "$video_filename"
   ffmpeg -i "$video_filename" "$video_filename.wav"
   if [ -z "$path" ]; then
-    lame "$video_filename.wav" "$video_title.mp3"
+    lame -b 320 "$video_filename.wav" "$video_title.mp3"
   else
-    lame "$video_filename.wav" "$path/$video_title.mp3"
+    lame -b 320 "$video_filename.wav" "$path/$video_title.mp3"
   fi
   rm -f "$video_filename" "$video_filename.wav"
 done
