@@ -2,6 +2,8 @@
 
 Downloads videos from YouTube and convert them to mp3.
 
+> This script is not necessary since youtube-dl already provides audio extration out-of-the-box. More info  https://github.com/jweslley/youtube-dl-mp3/issues/6
+
 ## Installation
 
 Just copy the `youtube-dl-mp3` script to somewhere in your `$PATH` (try /usr/local/bin).
