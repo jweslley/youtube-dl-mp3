@@ -1,26 +1,68 @@
 #!/bin/bash
 
-url=$1
-path=$2
+main() {
+  print_help $1 #prints help and exits if -h or --help is present
+  check_requirements # exits if a requirement is not found
 
-TMP_FILE="youtube-mp3-$RANDOM.tmp"
+  url=$1
+  path=$2
 
-youtube-dl --ignore-errors --get-title --get-url --get-filename "$url" > $TMP_FILE 2> "/tmp/$TMP_FILE.err"
+  TMP_FILE="youtube-mp3-$RANDOM.tmp"
+  ERROR_OUT_FILE="/tmp/$TMP_FILE.err"
 
-exec 42< $TMP_FILE
+  youtube-dl --ignore-errors --get-title --get-url --get-filename "$url" > $TMP_FILE 2> $ERROR_OUT_FILE
 
-while read video_title <&42 ; do
-  read video_url <&42
-  read video_filename <&42
-  wget "$video_url" -O "$video_filename"
-  ffmpeg -i "$video_filename" "$video_filename.wav"
-  if [ -z "$path" ]; then
-    lame -b 320 "$video_filename.wav" "$video_title.mp3"
-  else
-    lame -b 320 "$video_filename.wav" "$path/$video_title.mp3"
+  if [ $? -ne 0 ];then  #if youtube-dl exited with error code, print error and exit
+    cat $ERROR_OUT_FILE 
+    rm -f $ERROR_OUT_FILE
+    exit 1
   fi
-  rm -f "$video_filename" "$video_filename.wav"
-done
 
-exec 42<&-
-rm -f $TMP_FILE
+  exec 42< $TMP_FILE
+
+  while read video_title <&42 ; do
+    read video_url <&42
+    read video_filename <&42
+    wget "$video_url" -O "$video_filename"
+    ffmpeg -i "$video_filename" "$video_filename.wav"
+    if [ -z "$path" ]; then
+      lame -b 320 "$video_filename.wav" "$video_title.mp3"
+    else
+      lame -b 320 "$video_filename.wav" "$path/$video_title.mp3"
+    fi
+    rm -f "$video_filename" "$video_filename.wav"
+  done
+
+  exec 42<&-
+  rm -f $TMP_FILE
+}
+
+function print_help() {
+  if [[ -z "$1" ||"$1" == "-h" || "$1" == "--help" ]]; then cat <<-EOF
+    Usage: $(basename "$0") "video-url"
+
+    Example:
+        youtube-dl-mp3 "http://www.youtube.com/watch?v=0714IbwC3HA"
+
+    You also can download all songs from a playlist at once:
+        youtube-dl-mp3 "http://www.youtube.com/playlist?list=PL35104532FCBAE989"
+
+EOF
+    exit
+  fi
+}
+
+function check_requirements() {
+  REQUIREMENTS=(wget youtube-dl ffmpeg lame)
+
+  for (( i = 0 ; i < ${#REQUIREMENTS[@]} ; i++ )) do
+    if ! hash ${REQUIREMENTS[$i]} 2>/dev/null ; then
+        echo_error "Requirement ${REQUIREMENTS[$i]} not installed."
+        exit 1
+    fi
+  done
+}
+
+function echo_error() { echo -e " \033[1;31m✖ Error:\033[0m  $@"; }
+
+main "$@"
