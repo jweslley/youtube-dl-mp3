@@ -7,7 +7,7 @@ Downloads videos from YouTube and convert them to mp3.
 Just copy the `youtube-dl-mp3` script to somewhere in your `$PATH` (try /usr/local/bin).
 
 ## Requirements
-
+  * [ffmpeg](https://ffmpeg.org/download.html)
   * [youtube-dl](https://github.com/rg3/youtube-dl)
 
 On Ubuntu, these requirements can be installed using this comand:
