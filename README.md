@@ -24,6 +24,10 @@ On Fedora
 
     sudo dnf install youtube-dl ffmpeg
 
+Or you can also use pip to install `youtube-dl`
+
+    sudo pip install --upgrade youtube_dl
+
 ## Usage
 
     youtube-dl-mp3 "video-url"
