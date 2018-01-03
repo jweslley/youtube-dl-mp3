@@ -32,11 +32,14 @@ Or you can also use pip to install `youtube-dl`
 
     youtube-dl-mp3 "video-url"
 
-
 Example:
 
     youtube-dl-mp3 "http://www.youtube.com/watch?v=0714IbwC3HA"
 
+If `xclip` is installed and `youtube-dl-mp3` is called with no arguments the URL address will be automatically retrieved from clipboard
+
+	# xclip is used to get copied URL from clipboard
+	youtube-dl-mp3
 
 You also can download songs from a playlist at once:
 
