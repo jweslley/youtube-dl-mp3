@@ -4,5 +4,5 @@
 if [ -x "$(command -v xclip)" ] && [ "$#" -le 1 ] ; then
 	youtube-dl --extract-audio --audio-format mp3 --audio-quality 0 --ignore-errors -o "%(title)s.%(ext)s" "$(xclip -o)"
 else
-	youtube-dl --extract-audio --audio-format mp3 --audio-quality 0 --ignore-errors -o "%(title)s.%(ext)s" $@
+	youtube-dl --extract-audio --audio-format mp3 --audio-quality 0 --ignore-errors -o "%(title)s.%(ext)s" "$@"
 fi
